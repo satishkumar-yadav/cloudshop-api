@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sky.cloudshop_api.dto.ProductRequest;
@@ -39,14 +40,22 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id,
             @RequestBody ProductRequest productRequest) {
-        return new ResponseEntity<ProductResponse>(productService.updateProduct(id,
-                productRequest), HttpStatus.OK);
+        // return new ResponseEntity<ProductResponse>(productService.updateProduct(id,
+        // productRequest), HttpStatus.OK);
+        return productService.updateProduct(id, productRequest)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+        boolean deleted = productService.deleteProduct(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductResponse>> searchProducts(@RequestParam String keyword) {
+        return ResponseEntity.ok(productService.searchProducts(keyword));
     }
 
 }

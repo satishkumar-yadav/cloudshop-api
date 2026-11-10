@@ -49,13 +49,14 @@ public class ProductService {
         product.setStockQuantity(productRequest.getStockQuantity());
     }
 
-    public ProductResponse updateProduct(Long id, ProductRequest productRequest) {
+    public Optional<ProductResponse> updateProduct(Long id, ProductRequest productRequest) {
         return productRepository.findById(id)
                 .map(existingProduct -> {
                     updateProductFromRequest(existingProduct, productRequest);
                     Product savedProduct = productRepository.save(existingProduct);
                     return mapToProductResponse(savedProduct);
-                }).orElseThrow(() -> new RuntimeException("Product Not Found: " + id));
+                });
+        // }).orElseThrow(() -> new RuntimeException("Product Not Found: " + id));
     }
 
     public List<ProductResponse> getAllProcucts() {
@@ -64,11 +65,23 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-        product.setActive(false);
-        productRepository.save(product);
+    public boolean deleteProduct(Long id) {
+        return productRepository.findById(id)
+                .map(product -> {
+                    product.setActive(false);
+                    productRepository.save(product);
+                    return true;
+                }).orElse(false);
+        // Product product = productRepository.findById(id)
+        // .orElseThrow(() -> new RuntimeException("Product not found"));
+        // product.setActive(false);
+        // productRepository.save(product);
+    }
+
+    public List<ProductResponse> searchProducts(String keyword) {
+        return productRepository.searchProducts(keyword).stream()
+                .map(this::mapToProductResponse)
+                .collect(Collectors.toList());
     }
 
 }
