@@ -1,5 +1,9 @@
 package com.sky.cloudshop_api.service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +56,19 @@ public class ProductService {
                     Product savedProduct = productRepository.save(existingProduct);
                     return mapToProductResponse(savedProduct);
                 }).orElseThrow(() -> new RuntimeException("Product Not Found: " + id));
+    }
+
+    public List<ProductResponse> getAllProcucts() {
+        return productRepository.findByActiveTrue().stream()
+                .map(this::mapToProductResponse)
+                .collect(Collectors.toList());
+    }
+
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        product.setActive(false);
+        productRepository.save(product);
     }
 
 }
