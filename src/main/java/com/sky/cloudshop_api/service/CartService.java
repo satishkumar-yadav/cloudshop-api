@@ -13,10 +13,12 @@ import com.sky.cloudshop_api.repository.CartItemRepository;
 import com.sky.cloudshop_api.repository.ProductRepository;
 import com.sky.cloudshop_api.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional // fixes runtime exception while deleting
 public class CartService {
 
     private final ProductRepository productRepository;
