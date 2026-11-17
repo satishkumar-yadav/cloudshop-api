@@ -1,8 +1,10 @@
 package com.sky.cloudshop_api.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import com.sky.cloudshop_api.dto.CartItemRequest;
@@ -79,6 +81,12 @@ public class CartService {
         }
 
         return false;
+    }
+
+    public List<CartItem> getCart(String userId) {
+        return userRepository.findById(Long.valueOf(userId))
+                .map(cartItemRepository::findByUser)
+                .orElseGet(List::of); // returning empty list if user doesn't exist
     }
 
 }
