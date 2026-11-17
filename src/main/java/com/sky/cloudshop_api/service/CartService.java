@@ -61,17 +61,22 @@ public class CartService {
 
     public boolean deleteItemFromCart(String userId, Long productId) {
         Optional<Product> productOpt = productRepository.findById(productId);
-        if (productOpt.isEmpty())
-            return false;
+        // if (productOpt.isEmpty())
+        // return false;
 
         Optional<User> userOpt = userRepository.findById(Long.valueOf(userId));
-        if (userOpt.isEmpty())
-            return false;
+        // if (userOpt.isEmpty())
+        // return false;
 
-        userOpt.flatMap(user -> productOpt.map(product -> {
-            cartItemRepository.deleteByUserAndProduct(user, product);
+        // userOpt.flatMap(user -> productOpt.map(product -> {
+        // cartItemRepository.deleteByUserAndProduct(user, product);
+        // return true;
+        // }));
+
+        if (productOpt.isPresent() && userOpt.isPresent()) {
+            cartItemRepository.deleteByUserAndProduct(userOpt.get(), productOpt.get());
             return true;
-        }));
+        }
 
         return false;
     }
