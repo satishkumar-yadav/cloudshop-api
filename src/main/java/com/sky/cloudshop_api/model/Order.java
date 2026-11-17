@@ -21,7 +21,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "orders") // renamed as this table not getting created due to order as reserved keyword
 @Data
 @NoArgsConstructor
 public class Order {

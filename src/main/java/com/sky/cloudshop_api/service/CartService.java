@@ -89,4 +89,10 @@ public class CartService {
                 .orElseGet(List::of); // returning empty list if user doesn't exist
     }
 
+    public void clearCart(String userId) { // removes all cart items for user
+        userRepository.findById(Long.valueOf(userId)).ifPresent(
+                // user -> cartItemRepository.deleteByUser(user); // replaced by lambda
+                cartItemRepository::deleteByUser);
+    }
+
 }
